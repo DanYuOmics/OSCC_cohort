@@ -11,23 +11,59 @@ All raw FASTQ files, reference databases, and downstream output files are organi
 ```text
 /data/OSCC2/
 ├── fastq/
-│   ├── RNA/                               # RNA-Seq raw & symlinked FASTQs (28 libraries)
-│   │   ├── samples.txt                    # RNA-Seq sample prefix list
+│   ├── RNA/                               # RNA-Seq module
+│   │   ├── samples.txt                    # RNA-Seq sample prefix list (48 samples)
 │   │   ├── script_1_fastqc.sh             # FastQC execution script
-│   │   ├── script_2_hisat.sh              # Parallel HISAT2 alignment script
-│   │   └── hisat2_out/                    # Coordinate-sorted BAM outputs (*.bam, *.bam.bai)
-│   └── WGS/                               # WGS raw & symlinked FASTQs
-│       ├── normal/                        # Germline / normal control FASTQs (25 samples)
-│       └── tumour/                        # Primary tumor FASTQs (23 samples / 27 sequencing runs)
-├── fastqc_out/                            # FastQC HTML and zip quality reports
-└── copy_wgs.log                           # WGS disk-to-server data transfer log
+│   │   ├── script_2_hisat.sh              # HISAT2 parallel alignment script
+│   │   ├── script_3_stringtie_assemble.sh # StringTie transcript assembly script
+│   │   ├── script_4_merge.sh              # StringTie transcript merge script
+│   │   ├── script_5_stringtie_quant.sh    # StringTie abundance quantification script (-e -B)
+│   │   ├── script_6_extraction.sh         # prepDE.py matrix extraction script
+│   │   ├── extract_counts.py              # Custom Python quantification helper
+│   │   ├── hisat2_out/                    # Coordinate-sorted BAM outputs (*.sort.bam, *.sort.bam.bai)
+│   │   ├── stringtie_assemble/            # Sample-level GTF assembly files
+│   │   ├── stringtie_merged.gtf           # Merged non-redundant transcriptome GTF
+│   │   ├── ballgown_out/                  # Structured Ballgown quantification directories (*.ctab)
+│   │   ├── gene_count_matrix.csv          # Gene-level raw count expression matrix
+│   │   └── transcript_count_matrix.csv    # Transcript-level raw count expression matrix
+│   │
+│   └── WGS/                               # WGS raw & alignment module
+│       ├── normal/                        # Germline / normal control FASTQs (25 pairs)
+│       ├── tumour/                        # Primary tumor FASTQs (23 pairs, including merged *.combined.fq.gz)
+│       │   └── raw_split_lanes/           # Archived multi-lane FASTQs for top-up samples (S19/S21/S24/S25)
+│       ├── script_1_merge_lane.sh         # Dual-lane merging script for top-up samples
+│       └── script_2_bwa.sh                # BWA-MEM batch alignment script
+│
+├── BAM/                                   # WGS alignment outputs & variant calling workspace
+│   ├── normal/                            # Normal control BAMs (*.bam, *.sort.dedup.bam, *.bai)
+│   ├── tumour/                            # Tumor BAMs (*.bam, *.sort.dedup.bam, *.bai)
+│   └── somatic/                           # Somatic calling deliverables (*.clean.vcf.gz, ANNOVAR outputs)
+│
+├── OSCC_cohort/                           # Synchronized Git repository (DanYuOmics/OSCC_cohort)
+│   └── scripts/
+│       ├── RNA/                           # Archived RNA-Seq pipeline scripts
+│       └── WGS/                           # Archived WGS pipeline scripts
+│
+├── fastqc_out/                            # Quality control reports (*.html, *.zip)
+└── copy_wgs.log                           # Data transfer log
 
 /data/yudan_ref/
-└── RNA/
-    └── grch38_snp_tran/                   # HISAT2 pre-built index with SNP and transcript models
-        ├── genome_snp_tran.1.ht2
-        ├── genome_snp_tran.2.ht2
-        └── ...
+├── RNA/
+│   └── grch38_snp_tran/                   # HISAT2 reference index & transcriptome annotations
+│       ├── genome_snp_tran.1.ht2 ... .8.ht2
+│       └── Homo_sapiens.GRCh38.109.gtf    # Ensembl genomic annotation GTF
+│
+└── genomics/                              # WGS reference genome & GATK variant calling resources
+    ├── Homo_sapiens_assembly38/
+    │   ├── Homo_sapiens_assembly38.fa     # GRCh38 reference FASTA
+    │   ├── Homo_sapiens_assembly38.fa.fai # FASTA index
+    │   ├── Homo_sapiens_assembly38.dict   # Sequence dictionary
+    │   └── Homo_sapiens_assembly38.fa.*   # Complete BWA indices (.bwt, .sa, .pac, .ann, .amb)
+    │
+    ├── 1000g_pon.hg38.vcf.gz              # Mutect2 Panel of Normals (PON)
+    ├── af-only-gnomad.hg38.vcf.gz         # gnomAD allele frequency germline resource
+    └── annovar/
+        └── humandb/hg38/                  # ANNOVAR functional annotation databases
 ```
 
 ---
