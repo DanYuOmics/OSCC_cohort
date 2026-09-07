@@ -1,0 +1,39 @@
+*.log
+*.log.*
+nohup.out
+tmp/
+mutect2/
+
+# WGS pipeline logs & data files
+*.log
+*.log.*
+nohup.out
+*.bam
+*.bai
+*.vcf.gz
+*.vcf.gz.tbi
+*.table
+*.tar.gz
+
+# Subdirectories containing large alignments or variant calls
+normal/
+tumour/
+mutect2/
+tmp/
+
+# WGS pipeline logs & data files
+*.log
+*.log.*
+nohup.out
+*.bam
+*.bai
+*.vcf.gz
+*.vcf.gz.tbi
+*.table
+*.tar.gz
+
+# Subdirectories containing large alignments or variant calls
+normal/
+tumour/
+mutect2/
+tmp/
